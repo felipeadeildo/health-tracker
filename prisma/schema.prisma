@@ -23,6 +23,12 @@ model User {
   sessions      Session[]
   accounts      Account[]
 
+  weightLogs   WeightLog[]
+  mealLogs     MealLog[]
+  exerciseLogs ExerciseLog[]
+  goals        Goal[]
+  dailyNotes   DailyNote[]
+
   @@unique([email])
   @@map("user")
 }
@@ -73,4 +79,128 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+model WeightLog {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date      DateTime @db.Date
+  weight    Float
+  notes     String?
+  createdAt DateTime @default(now())
+
+  @@unique([userId, date])
+  @@index([userId, date])
+  @@map("weight_log")
+}
+
+model MealLog {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date        DateTime @db.Date
+  mealType    MealType
+  description String
+  calories    Int?
+  protein     Float?
+  carbs       Float?
+  fat         Float?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId, date])
+  @@map("meal_log")
+}
+
+enum MealType {
+  BREAKFAST
+  LUNCH
+  SNACK
+  DINNER
+  OTHER
+}
+
+model ExerciseLog {
+  id             String       @id @default(cuid())
+  userId         String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date           DateTime     @db.Date
+  name           String
+  exerciseType   ExerciseType
+  durationMin    Int
+  caloriesBurned Int?
+  intensity      Intensity?
+  heartRate      Int?
+  notes          String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([userId, date])
+  @@map("exercise_log")
+}
+
+enum ExerciseType {
+  CARDIO
+  STRENGTH
+  FLEXIBILITY
+  SPORTS
+  OTHER
+}
+
+enum Intensity {
+  LOW
+  MODERATE
+  HIGH
+  MAX
+}
+
+model Goal {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type        GoalType
+  targetValue Float
+  deadline    DateTime? @db.Date
+  notes       String?
+  active      Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([userId, active])
+  @@map("goal")
+}
+
+enum GoalType {
+  TARGET_WEIGHT
+  DAILY_CALORIES
+  WEEKLY_WORKOUTS
+  MIN_WORKOUT_DURATION
+  DAILY_WATER
+  CALORIES_PER_WORKOUT
+}
+
+model DailyNote {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date        DateTime @db.Date
+  mood        Mood?
+  notes       String?
+  waterLiters Float?
+  sleepHours  Float?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([userId, date])
+  @@index([userId, date])
+  @@map("daily_note")
+}
+
+enum Mood {
+  GREAT
+  GOOD
+  NEUTRAL
+  BAD
+  AWFUL
 }
