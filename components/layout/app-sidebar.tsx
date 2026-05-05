@@ -35,11 +35,11 @@ import { authClient } from "@/lib/auth-client"
 import { useState } from "react"
 
 const NAV_ITEMS = [
-  { href: "/",           label: "Dashboard",  icon: RiLayoutGridLine },
-  { href: "/diario",     label: "Diário",     icon: RiBookOpenLine   },
-  { href: "/exercicios", label: "Exercícios", icon: RiRunLine        },
-  { href: "/evolucao",   label: "Evolução",   icon: RiLineChartLine  },
-  { href: "/metas",      label: "Metas",      icon: RiTargetLine     },
+  { href: "/", label: "Dashboard", icon: RiLayoutGridLine },
+  { href: "/diario", label: "Diário", icon: RiBookOpenLine },
+  { href: "/exercicios", label: "Exercícios", icon: RiRunLine },
+  { href: "/evolucao", label: "Evolução", icon: RiLineChartLine },
+  { href: "/metas", label: "Metas", icon: RiTargetLine },
 ]
 
 interface AppSidebarProps {
@@ -78,7 +78,9 @@ export function AppSidebar({ userName, userEmail }: AppSidebarProps) {
                 </div>
                 <div className="flex flex-col leading-tight">
                   <span className="font-semibold">Health Tracker</span>
-                  <span className="text-xs text-muted-foreground">Painel de saúde</span>
+                  <span className="text-xs text-muted-foreground">
+                    Painel de saúde
+                  </span>
                 </div>
               </Link>
             </SidebarMenuButton>
@@ -92,7 +94,11 @@ export function AppSidebar({ userName, userEmail }: AppSidebarProps) {
             <SidebarMenu>
               {NAV_ITEMS.map(({ href, label, icon: Icon }) => (
                 <SidebarMenuItem key={href}>
-                  <SidebarMenuButton asChild isActive={pathname === href} tooltip={label}>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={pathname === href}
+                    tooltip={label}
+                  >
                     <Link href={href}>
                       <Icon />
                       <span>{label}</span>
@@ -110,15 +116,22 @@ export function AppSidebar({ userName, userEmail }: AppSidebarProps) {
           <SidebarMenuItem>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <SidebarMenuButton size="lg" className="data-[state=open]:bg-sidebar-accent">
+                <SidebarMenuButton
+                  size="lg"
+                  className="data-[state=open]:bg-sidebar-accent"
+                >
                   <Avatar className="size-8 rounded-lg">
-                    <AvatarFallback className="rounded-lg bg-primary/10 text-primary text-xs font-semibold">
+                    <AvatarFallback className="rounded-lg bg-primary/10 text-xs font-semibold text-primary">
                       {initials}
                     </AvatarFallback>
                   </Avatar>
-                  <div className="flex flex-col leading-tight text-left">
-                    <span className="font-medium text-sm truncate">{userName}</span>
-                    <span className="text-xs text-muted-foreground truncate">{userEmail}</span>
+                  <div className="flex flex-col text-left leading-tight">
+                    <span className="truncate text-sm font-medium">
+                      {userName}
+                    </span>
+                    <span className="truncate text-xs text-muted-foreground">
+                      {userEmail}
+                    </span>
                   </div>
                 </SidebarMenuButton>
               </DropdownMenuTrigger>

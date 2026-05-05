@@ -1,33 +1,29 @@
-import { headers } from "next/headers"
-import { redirect } from "next/navigation"
-import { auth } from "@/lib/auth"
-import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
-import { TooltipProvider } from "@/components/ui/tooltip"
-import { AppSidebar } from "@/components/layout/app-sidebar"
-import { Topbar } from "@/components/layout/topbar"
+import { Suspense } from "react"
+import { AppShell } from "@/components/layout/app-shell"
+import { SidebarUser } from "@/components/layout/sidebar-user"
+import { Skeleton } from "@/components/ui/skeleton"
 
-export default async function AppLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
-  const session = await auth.api.getSession({ headers: await headers() })
-  if (!session) redirect("/login")
-
+export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
-    <TooltipProvider>
-      <SidebarProvider>
-        <AppSidebar
-          userName={session.user.name}
-          userEmail={session.user.email}
-        />
-        <SidebarInset>
-          <Topbar />
-          <main className="flex flex-1 flex-col gap-6 p-6">
-            {children}
-          </main>
-        </SidebarInset>
-      </SidebarProvider>
-    </TooltipProvider>
+    <AppShell
+      sidebar={
+        <Suspense fallback={<SidebarFallback />}>
+          <SidebarUser />
+        </Suspense>
+      }
+    >
+      {children}
+    </AppShell>
+  )
+}
+
+function SidebarFallback() {
+  return (
+    <div className="hidden h-svh w-64 flex-col gap-2 border-r bg-sidebar px-3 py-4 md:flex">
+      <Skeleton className="mb-2 h-10 w-full rounded-xl" />
+      {Array.from({ length: 5 }).map((_, i) => (
+        <Skeleton key={i} className="h-8 w-full rounded-lg" />
+      ))}
+    </div>
   )
 }
